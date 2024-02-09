@@ -1,42 +1,39 @@
 import axios from 'axios';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { Product } from './Models/Product';
-import { ListItem } from 'react-native-elements';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Home from './pages/Home';
+import 'tailwindcss/tailwind.css';
+
+
+
+  const Stack = createNativeStackNavigator();
+
 
 
 export default function App() {
 
-  const [products, setProducts] = useState<Product[]>([]);
+  // const [products, setProducts] = useState<Product[]>([]);
 
-  useEffect(() => {
-    async function fetchdata() {
-      const productsResponse = await axios.get<Product[]>("http://192.168.1.8:7049/" + "Product");
-      setProducts(productsResponse.data);
 
-    }
-    fetchdata();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchdata() {
+  //     const productsResponse = await axios.get<Product[]>("http://192.168.1.7:7049/api/" + "Product");
+  //     setProducts(productsResponse.data);
+  //     console.log(products)
+
+  //   }
+  //   fetchdata();
+  // }, []);
 
   return (
-    <View style={styles.container}>
-      {products.map(product => (
-        <ListItem key={product.name}>
-          <ListItem.Content>
-            <ListItem.Title>{product.name}</ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-      ))}
-    </View>
+    <NavigationContainer>
+        <Stack.Navigator>
+        <Stack.Screen name="Home" component={Home} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
