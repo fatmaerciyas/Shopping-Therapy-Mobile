@@ -2,15 +2,17 @@ import React from "react";
 import { TouchableOpacity, Image, Text } from "react-native";
 
 interface CategoryCardProps {
-  imgUrl: string; // Change 'any' to the appropriate type for imgUrl, such as string
+  imgUrl: any;
   title: string;
 }
 
 export default function CategoryCard({ imgUrl, title }: CategoryCardProps) {
-  console.log(imgUrl);
   return (
     <TouchableOpacity className="relative mr-2">
-      {/* <Image source={image} className="h-20 w-20 rounded" /> */}
+      <Image
+        source={require("/Users/fatma/OneDrive/Desktop/Repositories/Shopping-Therapy-Mobile/shopping-therapy-react-native/src/assets/images/categories/fashion.jpg")}
+        className="h-20 w-20 rounded"
+      />
       <Text className="absolute bottom-1 left-1 text-white font-bold">
         {title}
       </Text>

@@ -14,8 +14,10 @@ import {
   UserIcon,
   MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
-import BackButton from "../Components/backButton";
-import Categories from "../Components/categories";
+
+import Categories from "../components/category/categories";
+import BackButton from "../components/common/backButton";
+import FeaturedRow from "../components/home/featuredRow";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -57,7 +59,30 @@ export default function Home() {
 
       {/* Body */}
       <ScrollView className="bg-gray-100 pb-24">
+        {/* Categories */}
         <Categories />
+        {/* End of Categories */}
+
+        {/* Featured Row */}
+        <FeaturedRow
+          id="123"
+          title="Featured"
+          description="Paid placements from our partners"
+        />
+
+        {/* Discounts */}
+        <FeaturedRow
+          id="1234"
+          title="Tasty Discounts"
+          description="Paid placements from our partners"
+        />
+
+        {/* Offers */}
+        <FeaturedRow
+          id="12345"
+          title="Offers near you!"
+          description="Paid placements from our partners"
+        />
       </ScrollView>
     </SafeAreaView>
   );

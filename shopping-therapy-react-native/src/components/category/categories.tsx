@@ -1,9 +1,9 @@
 import { ScrollView, Text, View } from "react-native";
-import CategoryCard from "./categoryCard";
 import { useEffect, useState } from "react";
-import { Category } from "../Models/Category";
+import { Category } from "../../models/Category";
 import axios from "axios";
-import { baseUrl } from "../api/url.contants";
+import { baseUrl } from "../../api/url.contants";
+import CategoryCard from "./categoryCard";
 
 export default function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
