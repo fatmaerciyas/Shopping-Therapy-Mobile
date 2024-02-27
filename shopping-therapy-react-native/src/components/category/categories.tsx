@@ -21,17 +21,13 @@ export default function Categories() {
     <ScrollView
       contentContainerStyle={{
         paddingHorizontal: 15,
-        paddingTop: 10,
       }}
       horizontal
       showsHorizontalScrollIndicator={false}
+      className="overflow-visible"
     >
       {categories.map((category) => (
-        <CategoryCard
-          imgUrl={category.image}
-          key={category.name}
-          title={category.name}
-        />
+        <CategoryCard category={category} key={category.name} />
       ))}
     </ScrollView>
   );

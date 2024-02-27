@@ -3,7 +3,7 @@ import { baseUrl } from "../../api/url.contants";
 import { Category } from "../../models/Category";
 import { Product } from "../../models/Product";
 import axios from "axios";
-import { TouchableOpacity, View, Text } from "react-native";
+import { TouchableOpacity, View, Text, ScrollView } from "react-native";
 import ProductCard from "./productCard";
 
 export default function ProductList() {
@@ -24,17 +24,22 @@ export default function ProductList() {
   }, []);
 
   return (
-    <TouchableOpacity>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingHorizontal: 15,
+      }}
+      className=" overflow-visible"
+    >
       {products.length != 0 ? (
-        <View>
-          {products.map((product) => {
-            if (!product) {
-              return null;
-            }
+        products.map((product) => {
+          if (!product) {
+            return null;
+          }
 
-            return <ProductCard key={product.productId} product={product} />;
-          })}
-        </View>
+          return <ProductCard key={product.productId} product={product} />;
+        })
       ) : (
         <View>
           <Text className="text-gray-500 m-auto text-xs mt-20">
@@ -42,6 +47,6 @@ export default function ProductList() {
           </Text>
         </View>
       )}
-    </TouchableOpacity>
+    </ScrollView>
   );
 }

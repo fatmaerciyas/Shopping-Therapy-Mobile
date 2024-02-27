@@ -24,13 +24,11 @@ export default function FeaturedRow({
 
       <ScrollView
         horizontal
-        contentContainerStyle={{
-          paddingHorizontal: 15,
-        }}
         showsHorizontalScrollIndicator={false}
-        className="pt-4"
+        contentContainerStyle={{}}
+        className="pt-4 overflow-visible"
       >
-        {/* ProductCards */}
+        {/* ProductList */}
         <ProductList />
       </ScrollView>
     </View>
