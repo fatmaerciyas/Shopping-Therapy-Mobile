@@ -61,10 +61,6 @@ export default function Home() {
       </View>
       {/* End of Searchbar */}
 
-      <View>
-        <Slide />
-      </View>
-
       {/* Body */}
       <ScrollView
         showsHorizontalScrollIndicator={false}
@@ -73,6 +69,10 @@ export default function Home() {
         }}
         className="bg-gray-100 pb-24"
       >
+        <View>
+          <Slide />
+        </View>
+
         {/* Categories */}
         <Categories />
         {/* End of Categories */}
@@ -80,22 +80,22 @@ export default function Home() {
         {/* Featured Row */}
         <FeaturedRow
           id="123"
-          title="Featured"
-          description="Paid placements from our partners"
+          title="News"
+          description="Loreem ipsum dolor sit amet"
         />
 
         {/* Discounts */}
         <FeaturedRow
           id="1234"
-          title="Tasty Discounts"
-          description="Paid placements from our partners"
+          title="Popular"
+          description="Loreem ipsum dolor sit amet"
         />
 
         {/* Offers */}
         <FeaturedRow
           id="12345"
           title="Offers near you!"
-          description="Paid placements from our partners"
+          description="Loreem ipsum dolor sit amet"
         />
       </ScrollView>
 
