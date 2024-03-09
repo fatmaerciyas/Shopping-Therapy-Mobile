@@ -5,6 +5,7 @@ import { Product } from "../../models/Product";
 import axios from "axios";
 import { TouchableOpacity, View, Text, ScrollView } from "react-native";
 import ProductCard from "./productCard";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -37,7 +38,6 @@ export default function ProductList() {
           if (!product) {
             return null;
           }
-
           return <ProductCard key={product.productId} product={product} />;
         })
       ) : (

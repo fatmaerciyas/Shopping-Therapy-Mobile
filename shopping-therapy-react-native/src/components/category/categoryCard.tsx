@@ -13,7 +13,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
     <View className="flex justify-center items-center mr-2">
       <TouchableOpacity
         onPress={() => setIsActive(category.categoryId)}
-        className="p-1 rounded-full pt-4 shadow"
+        className="p-1 rounded-full pt-4 "
       >
         <Image
           style={{ width: 70, height: 70, borderRadius: 50 }}

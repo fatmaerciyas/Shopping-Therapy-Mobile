@@ -1,23 +1,33 @@
-import axios from "axios";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import "tailwindcss/tailwind.css";
-import Home from "./src/screens/Home";
-import Product from "./src/screens/Product";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
 
-const Stack = createNativeStackNavigator();
+import StackNavigator from "./src/navigation/stackNavigator";
+
+const Tab = createBottomTabNavigator();
+
+const CustomTabBarIcon = ({ focused, icon, color }) => (
+  <View style={{ alignItems: "center" }}>
+    <Ionicons name={icon} size={30} color={color} />
+    {focused && (
+      <View
+        style={{
+          backgroundColor: "#00CCBB",
+          height: 1,
+          width: 40,
+          borderRadius: 2,
+        }}
+      />
+    )}
+  </View>
+);
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Product" component={Product} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <StackNavigator />
+    </>
   );
 }
