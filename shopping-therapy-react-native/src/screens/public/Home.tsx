@@ -13,12 +13,12 @@ import {
   UserIcon,
 } from "react-native-heroicons/outline";
 
-import Categories from "../components/category/categories";
-import FeaturedRow from "../components/home/featuredRow";
+import Categories from "../../components/category/categories";
+import FeaturedRow from "../../components/home/featuredRow";
 import * as Icon from "react-native-feather";
-import Footer from "../components/home/footer";
-import Slide from "../components/home/slide";
-import ProductList from "../components/product/productList";
+import Footer from "../../components/home/footer";
+import Slide from "../../components/home/slide";
+import ProductList from "../../components/product/productList";
 
 export default function Home() {
   const navigation = useNavigation();

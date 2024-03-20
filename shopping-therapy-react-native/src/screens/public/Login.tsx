@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
+  Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
@@ -15,49 +16,55 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Register from "./Register";
+import { baseUrl } from "../../api/url.contants";
+import useAuth from "../../hooks/useAuth.hook";
+import { ILoginDto } from "../../models/Auth";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 interface LoginScreenProps {}
 
-const LoginScreen: React.FC<LoginScreenProps> = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+const Login: React.FC<LoginScreenProps> = () => {
+  const { login } = useAuth();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
+  const loginSchema = Yup.object().shape({
+    userName: Yup.string().required("User Name is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 character"),
+  });
 
-        if (token) {
-          navigation.replace("Main");
-        }
-      } catch (err) {
-        console.log("error message", err);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ILoginDto>({
+    resolver: yupResolver(loginSchema),
+    defaultValues: {
+      userName: "",
+      password: "",
+    },
+  });
+
+  const onSubmitLoginForm = async (data: ILoginDto) => {
+    try {
+      // setLoading(true);
+      await login(data.userName, data.password);
+      // setLoading(false);
+    } catch (error) {
+      // setLoading(false);
+      const err = error as { data: string; status: number };
+      const { status } = err;
+      if (status === 401) {
+        Alert.alert("Invalid Username or Password");
+      } else {
+        Alert.alert("An Error occurred. Please contact admins");
       }
-    };
-    checkLoginStatus();
-  }, []);
-
-  const handleLogin = () => {
-    const user = {
-      email: email,
-      password: password,
-    };
-
-    axios
-      .post("http://localhost:8000/login", user)
-      .then((response) => {
-        console.log(response);
-        const token = response.data.token;
-        AsyncStorage.setItem("authToken", token);
-        navigation.replace("Main");
-      })
-      .catch((error) => {
-        Alert.alert("Login Error", "Invalid Email");
-        console.log(error);
-      });
+    }
   };
-
   return (
     <SafeAreaView
       style={{
@@ -166,11 +173,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
             alignItems: "center",
             justifyContent: "space-between",
           }}
-        >
-          <Text style={{ color: "#007FFF", fontWeight: "500" }}>
-            Forgot Password
-          </Text>
-        </View>
+        ></View>
 
         <View style={{ marginTop: 60 }} />
 
@@ -210,6 +213,6 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   );
 };
 
-export default LoginScreen;
+export default Login;
 
 const styles = StyleSheet.create({});

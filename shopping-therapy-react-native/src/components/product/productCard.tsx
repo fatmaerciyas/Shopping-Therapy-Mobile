@@ -3,14 +3,16 @@ import { Product } from "../../models/Product";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { MapPinIcon, StarIcon } from "react-native-heroicons/outline";
+import path from "path";
+import * as FileSystem from "expo-file-system";
 
 interface ProductItemProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductItemProps) {
-  const [image, setImage] = useState<string | null>(null);
   const navigation = useNavigation();
+  const [image, setImage] = useState("");
 
   const navigateToProductDetail = (productId: number) => {
     navigation.navigate("ProductDetail", {
@@ -18,11 +20,11 @@ export default function ProductCard({ product }: ProductItemProps) {
     });
   };
 
+  const ImageSource = product.image;
   useEffect(() => {
     if (product.image) {
-      setImage(product.image.toString());
+      setImage(product.image);
     }
-    console.log("Image ISSSSS:", image);
   }, [product.image]);
 
   return (
@@ -35,14 +37,12 @@ export default function ProductCard({ product }: ProductItemProps) {
         elevation: 5,
         borderRadius: 5,
       }}
-      className="bg-white mr-3 rounded-3xl my-2"
+      className="bg-white mr-3 rounded-3xl my-1"
       onPress={(productId) => navigateToProductDetail(productId)}
     >
       <Image
+        className="h-32 w-36 rounded-t-3xl cover"
         source={{ uri: product.image }}
-        className="h-24 w-40 rounded-t-3xl"
-        onError={(error) => console.log("Image LOADING ERRROOORR:", error)}
-        onLoad={(event) => console.log("Image loaded:", event.nativeEvent)}
       />
 
       <View className="px-3 pb-4 ">

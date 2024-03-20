@@ -1,7 +1,10 @@
 import axios, { AxiosResponse } from "axios";
 import { Product as ProductModel } from "../models/Product";
+import { baseUrl } from "./url.contants";
 
 const responseBody = (response: AxiosResponse) => response.data;
+axios.defaults.baseURL = baseUrl;
+
 axios.defaults.withCredentials = true;
 
 function createFormData(item: any) {
