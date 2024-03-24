@@ -9,6 +9,8 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  Button,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -17,14 +19,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as Yup from "yup";
-import { ScreenContext } from "react-native-screens";
 import useAuth from "../../hooks/useAuth.hook";
 import { useForm } from "react-hook-form";
 import { IRegisterDto } from "../../models/Auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import Spinner from "../../components/common/Spinner";
+
 const Register = () => {
+  const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const navigation = useNavigation();
 
   const registerSchema = Yup.object().shape({
     firstName: Yup.string().required("First Name is required"),
@@ -35,16 +40,17 @@ const Register = () => {
       .email("Input text must be a valid email"),
     password: Yup.string()
       .required("Password is required")
-      .min(8, "Password must be at least 8 character"),
+      .min(8, "Password must be at least 8 characters"),
     address: Yup.string().required("Address Is required"),
   });
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
     reset,
-  } = useForm<IRegisterDto>({
+  } = useForm({
     resolver: yupResolver(registerSchema),
     defaultValues: {
       firstName: "",
@@ -56,8 +62,9 @@ const Register = () => {
     },
   });
 
-  const onSubmitRegisterForm = async (data: IRegisterDto) => {
+  const onSubmitRegisterForm = async (data) => {
     try {
+      setLoading(true);
       await register(
         data.firstName,
         data.lastName,
@@ -72,278 +79,95 @@ const Register = () => {
       const err = error as { data: string; status: number };
       const { status, data } = err;
       if (status === 400 || status === 409) {
-        toast.error(data);
+        Alert.alert("Error", data);
       } else {
-        toast.error("An Error occurred. Please contact admins");
+        Alert.alert("Error", "An Error occurred. Please contact admins");
       }
     }
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
-    <ScrollView>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          backgroundColor: "white",
-          alignItems: "center",
-          paddingTop: 50,
-        }}
-      >
+    <ScrollView contentContainerStyle={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
         <View>
-          <Text
-            style={{
-              textAlign: "center",
-              color: "#00CCBB",
-              fontWeight: "600",
-              fontSize: 40,
-            }}
-          >
-            OneStopShop
-          </Text>
+          <Text style={styles.logo}>OneStopShop</Text>
         </View>
 
-        <KeyboardAvoidingView>
-          <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 17,
-                marginTop: 2,
-                color: "#041E42",
-              }}
-            >
-              Register to your Account
-            </Text>
+        <KeyboardAvoidingView style={styles.formContainer}>
+          <View>
+            <Text style={styles.title}>Register to your Account</Text>
           </View>
 
-          <View style={{ marginTop: 10 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-                backgroundColor: "#D0D0D0",
-                paddingVertical: 5,
-                borderRadius: 10,
-                marginTop: 30,
-              }}
+          <View>
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setValue("firstName", text)}
+              placeholder="First Name"
+            />
+            {errors.firstName && (
+              <Text style={styles.error}>{errors.firstName.message}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setValue("lastName", text)}
+              placeholder="Last Name"
+            />
+            {errors.lastName && (
+              <Text style={styles.error}>{errors.lastName.message}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setValue("userName", text)}
+              placeholder="Username"
+            />
+            {errors.userName && (
+              <Text style={styles.error}>{errors.userName.message}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setValue("email", text)}
+              placeholder="Email"
+            />
+            {errors.email && (
+              <Text style={styles.error}>{errors.email.message}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setValue("address", text)}
+              placeholder="Address"
+            />
+            {errors.address && (
+              <Text style={styles.error}>{errors.address.message}</Text>
+            )}
+
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setValue("password", text)}
+              placeholder="Password"
+              secureTextEntry={true}
+            />
+            {errors.password && (
+              <Text style={styles.error}>{errors.password.message}</Text>
+            )}
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmit(onSubmitRegisterForm)}
             >
-              <Ionicons
-                name="person-outline"
-                size={24}
-                color="gray"
-                style={{ marginLeft: 8 }}
-              />
-              <TextInput
-                value={name}
-                onChangeText={(text) => setName(text)}
-                style={{
-                  color: "gray",
-                  marginVertical: 6,
-                  width: 300,
-                  fontSize: name ? 14 : 14,
-                }}
-                placeholder="Firstname"
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-                backgroundColor: "#D0D0D0",
-                paddingVertical: 5,
-                borderRadius: 10,
-                marginTop: 10,
-              }}
-            >
-              <Ionicons
-                name="person"
-                size={24}
-                color="gray"
-                style={{ marginLeft: 8 }}
-              />
-
-              <TextInput
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-                style={{
-                  color: "gray",
-                  marginVertical: 6,
-                  width: 300,
-                  fontSize: password ? 14 : 14,
-                }}
-                placeholder="Lastname"
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-                backgroundColor: "#D0D0D0",
-                paddingVertical: 5,
-                borderRadius: 10,
-                marginTop: 30,
-              }}
-            >
-              <Ionicons
-                name="person-outline"
-                size={24}
-                color="gray"
-                style={{ marginLeft: 8 }}
-              />
-              <TextInput
-                value={name}
-                onChangeText={(text) => setName(text)}
-                style={{
-                  color: "gray",
-                  marginVertical: 6,
-                  width: 300,
-                  fontSize: name ? 14 : 14,
-                }}
-                placeholder="Username"
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-                backgroundColor: "#D0D0D0",
-                paddingVertical: 5,
-                borderRadius: 10,
-                marginTop: 10,
-              }}
-            >
-              <MaterialIcons
-                style={{ marginLeft: 8 }}
-                name="email"
-                size={24}
-                color="gray"
-              />
-
-              <TextInput
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-                style={{
-                  color: "gray",
-                  marginVertical: 6,
-                  width: 300,
-                  fontSize: password ? 14 : 14,
-                }}
-                placeholder="Email"
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-                backgroundColor: "#D0D0D0",
-                paddingVertical: 5,
-                borderRadius: 10,
-                marginTop: 30,
-              }}
-            >
-              <Ionicons
-                name="pin"
-                size={24}
-                color="gray"
-                style={{ marginLeft: 8 }}
-              />
-              <TextInput
-                value={name}
-                onChangeText={(text) => setName(text)}
-                style={{
-                  color: "gray",
-                  marginVertical: 6,
-                  width: 300,
-                  fontSize: name ? 14 : 14,
-                }}
-                placeholder="Address"
-              />
-            </View>
+              <Text style={styles.button}>Register</Text>
+            </TouchableOpacity>
           </View>
 
-          <View style={{}}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-                backgroundColor: "#D0D0D0",
-                paddingVertical: 5,
-                borderRadius: 10,
-                marginTop: 10,
-              }}
-            >
-              <AntDesign
-                name="lock1"
-                size={24}
-                color="gray"
-                style={{ marginLeft: 8 }}
-              />
-
-              <TextInput
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                secureTextEntry={true}
-                style={{
-                  color: "gray",
-                  marginVertical: 6,
-                  width: 300,
-                  fontSize: email ? 14 : 14,
-                }}
-                placeholder="Enter your password"
-              />
-            </View>
-          </View>
-
-          <View
-            style={{
-              marginTop: 12,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            {/* <Text style={{ color: "#007FFF", fontWeight: "500" }}>
-            Forgot Password
-          </Text> */}
-          </View>
-
-          <View style={{ marginTop: 60 }} />
-
-          <Pressable
-            onPress={handleRegister}
-            style={{
-              width: 150,
-              backgroundColor: "#00CCBB",
-              borderRadius: 10,
-              marginLeft: "auto",
-              marginRight: "auto",
-              marginBottom: 8,
-              padding: 12,
-            }}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                color: "white",
-                fontSize: 14,
-                fontWeight: "bold",
-              }}
-            >
-              Register
-            </Text>
-          </Pressable>
-
-          <Pressable onPress={() => navigation.goBack()}>
-            <Text style={{ textAlign: "center", color: "gray", fontSize: 14 }}>
+          <Pressable onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.signInText}>
               Already have an account? Sign In
             </Text>
           </Pressable>
@@ -355,4 +179,67 @@ const Register = () => {
 
 export default Register;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    padding: 20,
+  },
+  logoContainer: {
+    marginBottom: 30,
+  },
+  logo: {
+    textAlign: "center",
+    color: "#00CCBB",
+    fontWeight: "600",
+    fontSize: 40,
+  },
+  formContainer: {
+    width: "100%",
+    marginTop: 20, // Add margin top to create space between logo and form
+  },
+  title: {
+    fontSize: 20,
+    color: "#041E42",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  inputContainer: {
+    marginBottom: 10, // Add margin bottom to create space between inputs
+  },
+  input: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 10,
+    borderRadius: 10,
+  },
+  error: {
+    color: "red",
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+  buttonContainer: {
+    marginTop: 20, // Add margin top to create space between inputs and button
+    alignItems: "center",
+  },
+  button: {
+    textAlign: "center",
+    backgroundColor: "#00CCBB",
+    paddingVertical: 6,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  signInText: {
+    textAlign: "center",
+    color: "gray",
+    fontSize: 14,
+    marginTop: 20,
+  },
+});

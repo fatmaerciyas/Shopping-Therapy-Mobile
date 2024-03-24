@@ -290,7 +290,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
         console.log("Register Result:", response);
         Alert.alert("Register Was Successful. Please Login.");
-        navigate.navigate("LoginScreen");
+        navigate.navigate("Login");
       } catch (error) {
         console.error("Error registering:", error);
       }
@@ -298,24 +298,26 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     [navigate]
   );
 
-  const login = useCallback(
-    async (userName: string, password: string) => {
-      try {
-        const response = await axiosInstance.post<ILoginResponseDto>(
-          LOGIN_URL,
-          { userName, password }
-        );
-        const { newToken, userInfo } = response.data;
-        setSession(newToken);
-        dispatch({ type: IAuthContextActionTypes.LOGIN, payload: userInfo });
-        Alert.alert("Login Was Successful");
-        navigate.navigate("Home");
-      } catch (error) {
-        console.error("Error logging in:", error);
-      }
-    },
-    [navigate]
-  );
+  const login = useCallback(async (userName: string, password: string) => {
+    const response = await axiosInstance.post<ILoginResponseDto>(LOGIN_URL, {
+      userName,
+      password,
+    });
+    // In response, we receive jwt token and user data
+    const { newToken, userInfo } = response.data;
+    setSession(newToken);
+    dispatch({
+      type: IAuthContextActionTypes.LOGIN,
+      payload: userInfo,
+    });
+    Alert.alert("Login Was Successful");
+
+    if (userInfo?.roles && userInfo.roles.includes("ADMIN")) {
+      navigate.navigate("WelcomeAdmin");
+    } else {
+      navigate.navigate("Welcome");
+    }
+  }, []);
 
   const logout = useCallback(() => {
     setSession(null);

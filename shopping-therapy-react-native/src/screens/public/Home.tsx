@@ -19,6 +19,7 @@ import * as Icon from "react-native-feather";
 import Footer from "../../components/home/footer";
 import Slide from "../../components/home/slide";
 import ProductList from "../../components/product/productList";
+import BottomNavigator from "../../navigation/bottomNavigator";
 
 export default function Home() {
   const navigation = useNavigation();
